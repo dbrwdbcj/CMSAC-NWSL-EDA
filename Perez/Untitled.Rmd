@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R Markdown
 
-This is me
+This is me.
 
 ```{r cars}
 print('hello world')
