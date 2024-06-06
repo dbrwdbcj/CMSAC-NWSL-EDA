@@ -1,22 +1,3 @@
----
-title: "Untitled"
-output: html_document
-date: "2024-06-06"
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## R Markdown
-
-This is me.
-
-```{r}
-print('hello world')
-```
-
-```{r}
 library(tidyverse)
 library(dplyr)
 library(ggmosaic)
@@ -26,22 +7,10 @@ library(glmnet)
 library(ggthemes)
 
 nwsl_team_stats <- read_csv("https://raw.githubusercontent.com/36-SURE/36-SURE.github.io/main/data/nwsl_team_stats.csv")
-
 head(nwsl_team_stats)
-```
 
-```{r}
-nwsl_team_stats |> 
-  select (team_name, season, goal_differential) +
-  
-```
-
-```{r}
 levels(factor(nwsl_team_stats$team_name))
-```
-```{r}
 table(nwsl_team_stats$team_name)
-```
 
-
-
+#nwsl_team_stats |> 
+# select (team_name, season, goal_differential) +
