@@ -16,8 +16,7 @@ This is me.
 print('hello world')
 ```
 
-
-```{r}
-git config pull.rebase false
+```{r cars}
+print('fuck you, world')
 ```
 
