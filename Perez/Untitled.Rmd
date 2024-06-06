@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 This is me
 
 ```{r cars}
-print('fuck you world')
+print('hello world')
 ```
 
 
