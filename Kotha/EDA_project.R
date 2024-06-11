@@ -63,19 +63,22 @@ median_goal_differential <-nwsl_team_stats |>
   # Season Goal Differential of Folded Teams with median legend
   ggplot() +
     # First dataset: median_goal_differential
-    geom_line(data = median_goal_differential, aes(x = season, y = median_goal_differential, linetype = "Median Goal Differential"), color = 'black', linewidth = 1) +
+    geom_line(data = median_goal_differential, aes(x = season, y = median_goal_differential, linetype = "Median Goal Differential"), color = 'black', linewidth = 1.3) +
     geom_point(data = median_goal_differential, aes(x = season, y = median_goal_differential), color = 'black', show.legend = FALSE) +
     
     # Second dataset: nwsl_team_stats filtered data
     geom_line(data = nwsl_team_stats |> 
-                filter(!team_name %in% c("Chicago Red Stars", "Houston Dash", "NJ/NY Gotham FC", "OL Reign", "Portland Thorns FC", "Washington Spirit")), 
+                filter(!team_name %in% c("Chicago Red Stars", "Houston Dash", "NJ/NY Gotham FC", "OL Reign", "Orlando Pride", "Portland Thorns FC", "Washington Spirit")), 
               aes(x = season, y = goal_differential, group = team_name, color = team_name), linewidth = 1) +
     geom_point(data = nwsl_team_stats |> 
-                 filter(!team_name %in% c("Chicago Red Stars", "Houston Dash", "NJ/NY Gotham FC", "OL Reign", "Portland Thorns FC", "Washington Spirit")), 
+                 filter(!team_name %in% c("Chicago Red Stars", "Houston Dash", "NJ/NY Gotham FC", "OL Reign", "Orlando Pride", "Portland Thorns FC", "Washington Spirit")), 
                aes(x = season, y = goal_differential, group = team_name, color = team_name), size = 2) +
-    scale_color_manual(c('brown1', 'darkorange1', 'darkolivegreen3','darkgreen','cadetblue1','cyan4', 'blue3', 'darkorchid','deeppink4','deeppink1'))
+  
+      #scale line colors and legend
+    scale_linetype_manual(values = c("Median Goal Differential" = "dashed")) +
+    scale_color_manual(values = c('firebrick2', 'darkorange1', 'gold2', 'springgreen', 'mediumturquoise', 'mediumorchid', 'darkblue', 'deeppink', 'coral1')) +   
+
     
-    # Labels and theme
     labs(
       x = "Season",
       y = "Goal Differential",
@@ -83,24 +86,30 @@ median_goal_differential <-nwsl_team_stats |>
       linetype = "Median Goal Differential"
     ) +
     theme_bw() +
-    ggtitle('Season Goal Differential of Folded Teams') +
-    theme(legend.position = "right") +
+    ggtitle('Folded Team Goal Differential Compared to League Median Goal Differential') +
+    theme(legend.position = "right", 
+          plot.title = element_text(hjust = 0.5, face = 'bold')) 
+      
     
-    # Customizing the linetype scale to include the dashed line in the legend
-    scale_linetype_manual(values = c("Median Goal Differential" = "dashed"))
   
   # Season Goal Differential of Lasting Teams with median legend
   ggplot() +
     # First dataset: median_goal_differential
-    geom_line(data = median_goal_differential, aes(x = season, y = median_goal_differential, linetype = "Median Goal Differential"), color = 'black', linewidth = 1) +
+    geom_line(data = median_goal_differential, aes(x = season, y = median_goal_differential, linetype = "Median Goal Differential"), color = 'black', linewidth = 1.3) +
     geom_point(data = median_goal_differential, aes(x = season, y = median_goal_differential), color = 'black', show.legend = FALSE) +
     
     # Second dataset: nwsl_team_stats filtered data
     geom_line(data = nwsl_team_stats |> 
-                filter(team_name %in% c("Chicago Red Stars", "Houston Dash", "NJ/NY Gotham FC", "OL Reign", "Portland Thorns FC", "Washington Spirit")), 
+                filter(team_name %in% c("Chicago Red Stars", "Houston Dash", "NJ/NY Gotham FC", "OL Reign", "Orlando Pride", "Portland Thorns FC", "Washington Spirit")), 
               aes(x = season, y = goal_differential, group = team_name, color = team_name), linewidth = 1) +
-    
-    # Labels and theme
+    geom_point(data = nwsl_team_stats |> 
+                 filter(team_name %in% c("Chicago Red Stars", "Houston Dash", "NJ/NY Gotham FC", "OL Reign", "Orlando Pride", "Portland Thorns FC", "Washington Spirit")), 
+               aes(x = season, y = goal_differential, group = team_name, color = team_name), size = 1) +
+   
+    # Customizing the linetype scale to include the dashed line in the legend
+    scale_linetype_manual(values = c("Median Goal Differential" = "dashed")) +
+    scale_color_manual(values = c('firebrick2', 'darkorange1', 'gold2', 'springgreen','mediumturquoise','darkblue', 'mediumorchid')) +
+  
     labs(
       x = "Season",
       y = "Goal Differential",
@@ -108,11 +117,9 @@ median_goal_differential <-nwsl_team_stats |>
       linetype = "Median Goal Differential"
     ) +
     theme_bw() +
-    ggtitle('Team Goal Differential Compared to Media Goal Differential') +
-    theme(legend.position = "right") +
-    
-    # Customizing the linetype scale to include the dashed line in the legend
-    scale_linetype_manual(values = c("Median Goal Differential" = "dashed"))
+    ggtitle('Team Goal Differential Compared to League Median Goal Differential') +
+    theme(legend.position = "right", 
+          plot.title = element_text(hjust = 0.5, face = 'bold')) 
   
   
 # edit: change graph titles, center graph titles, median legend label name
