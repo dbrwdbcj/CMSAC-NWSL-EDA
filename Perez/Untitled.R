@@ -68,6 +68,21 @@ league_parity_2 |>
   theme(plot.subtitle = element_text(hjust = 0.5))
 
 league_parity_2 |> 
+  ggplot(aes(x = goal_differential, y = season, color = season)) +
+  geom_violin(fill=NA) +
+  geom_boxplot(width = 0.2, fill=NA)+
+  labs(
+    title = 'Measuring Parity in the NWSL',
+    subtitle = 'Distribution of Goal Differential per Season',
+    x = 'Goal Differential',
+    y = 'Season'
+  ) +
+  theme_solarized()+
+  theme(legend.position="none")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(plot.subtitle = element_text(hjust = 0.5))
+
+league_parity_2 |> 
   ggplot(aes(x = goal_differential, y = season, fill=season)) +
   geom_violin() +
   geom_boxplot(width = 0.2)+
@@ -149,7 +164,8 @@ nwsl_team_stats |>
              color = shot_cluster)) +
   geom_point(size = 4) + 
   ggthemes::scale_color_colorblind() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom")+
+  theme_bw()
 
 
 nwsl_team_stats |>
@@ -165,4 +181,16 @@ nwsl_team_stats |>
     y = 'Goal Conversion %'
   )+
   theme_solarized()+
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", 
+        legend.background = element_rect(fill = NA),
+        legend.key = element_rect(fill=NA))+
+  theme(plot.title = element_text(hjust = 0.5))
+
+############
+
+
+
+
+
+
+
