@@ -8,7 +8,11 @@ levels(factor(nwsl_team_stats$team_name))
 attach(nwsl_team_stats)
 levels(factor(team_name))
 library(plotly)
-
+library(ggplot2)
+library(tidyverse)
+library(ggthemes)
+library(viridis)
+#PLOT ONLY APPEARS IN MARKDOWN!
 plotly_test <- nwsl_team_stats |> 
   select(TeamName = team_name,
          PossPct = possession_pct,
@@ -18,9 +22,11 @@ plotly_test <- nwsl_team_stats |>
              text = paste( "",TeamName, "<br>", "Season:", Season, 
                            "<br>", "Possession%:", PossPct, "<br>", 
                            "Goal Differential:", GoalDiff)))+
-  geom_point()+
+  geom_point(alpha=0.6, size = 2)+
+  scale_color_viridis(discrete=FALSE)+
   labs(
-    title='Does Controlling the Ball Lead to Success?'
+    title='Does Controlling the Ball Lead to Success?',
+    subtitle = "Goal Differential vs. Possession Percentage"
   )+
   xlab("Possession Percentage")+
   ylab("Goal Differential")+
@@ -28,37 +34,20 @@ plotly_test <- nwsl_team_stats |>
                             text = paste("", "Possession%:", 
                                          round(after_stat(x), 2), "<br>", 
                                          "Goal Differential:", round(after_stat(y), 2))), method="lm", 
-              color="black", inherit.aes = FALSE)+
-  theme_gray()+
-  theme(
-    plot.title = element_text(hjust=0.5, face="bold")
-  )+
-  theme(plot.background = element_rect(fill = "#ffeabd"))+
-  theme(legend.background = element_rect(fill = "#ffeabd", color = "#ffeabd"))
+              color="gray20", inherit.aes = FALSE)+
+  theme_solarized()+
+  theme(plot.title = element_text(hjust=0.5, family="Arial", size= 14),
+        axis.title = element_text(family="Arial", size=12),
+        axis.text = element_text(family="Arial", size=12),
+        legend.title = element_text(family = "Arial", size = 10),  
+        legend.text = element_text(family = "Arial", size = 8),
+        panel.border = element_rect(color = "gray", fill = NA, linewidth = .5)
+  )
 
 ggplotly(plotly_test, tooltip = "text")
 
-# #Team GD in 2016 vs 2022
-# b=nwsl_team_stats
-# b = remove(team_name=="Utah Royals FC")
-# ggplot(nwsl_team_stats, aes(x=season, y=goal_differential, color=team_name))+
-#   geom_point()+
-#   geom_line()
-# 
-# 
-# #Pass Accuracy vs. Pass Accuracy in the Second Half
-# c <- nwsl_team_stats |> 
-#   select(pass_pct, pass_pct_opposition_half) |> 
-#   ggplot(aes(x=pass_pct, y=pass_pct_opposition_half))+
-#   geom_point()+
-#   geom_smooth(method="lm")
-# 
-# c
-# cor(pass_pct, pass_pct_opposition_half)
-# library(ggcorrplot)
 
-
-#Clustering
+#Clustering: NOT USED
 #Creating the Shots variable
 nwsl_cluster = nwsl_team_stats |> 
   mutate(Shots = round((goals/goal_conversion_pct)*100))
