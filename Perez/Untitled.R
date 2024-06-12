@@ -26,17 +26,15 @@ league_parity |>
   geom_violin() +
   geom_boxplot(width=0.5)
 
-#league_parity |> 
-#  ggplot(aes(x = goal_differential, y = season, color=season)) +
-#  geom_violin(width = 0.2) +
-#  geom_boxplot(width = 0.1)
-
 league_parity_2 <- league_parity
 
 league_parity_2$season = as.character(league_parity$season)
 
 summary(league_parity_2)
 summary(league_parity)
+
+###############################
+
 
 league_parity_2 |> 
   ggplot(aes(x = goal_differential, y = season, color=season)) +
@@ -45,63 +43,126 @@ league_parity_2 |>
   labs(
     title = 'Measuring Parity in the NWSL',
     subtitle = 'Distribution of Goal Differential per Season',
-    xlab = 'Goal Differential',
-    ylab = 'Season'
+    x = 'Goal Differential',
+    y = 'Season'
   ) +
   theme_bw()+
-  theme(legend.position="none")
-
-#################
-
-season_goals <- nwsl_team_stats |> 
-  select (season, team_name, games_played, goals)
-
-table(season_goals$season)
-
-goals_by_year <- aggregate(goals ~ season, data = season_goals, FUN = sum)
-
-goals_by_year |> 
-  ggplot(aes(x=season, y=goals))+
-  geom_point()+
-  geom_line()
+  theme(legend.position="none")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(plot.subtitle = element_text(hjust = 0.5))
 
 
-###################
+league_parity_2 |> 
+  ggplot(aes(x = goal_differential, y = season, fill=season)) +
+  geom_violin() +
+  geom_boxplot(width = 0.2)+
+  labs(
+    title = 'Measuring Parity in the NWSL',
+    subtitle = 'Distribution of Goal Differential per Season',
+    x = 'Goal Differential',
+    y = 'Season'
+  ) +
+  theme_economist()+
+  theme(legend.position="none")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(plot.subtitle = element_text(hjust = 0.5))
 
-improvement <- nwsl_team_stats |> 
-  select(season, goals, goal_conversion_pct, shot_accuracy)
+league_parity_2 |> 
+  ggplot(aes(x = goal_differential, y = season, fill=season)) +
+  geom_violin() +
+  geom_boxplot(width = 0.2)+
+  labs(
+    title = 'Measuring Parity in the NWSL',
+    subtitle = 'Distribution of Goal Differential per Season',
+    x = 'Goal Differential',
+    y = 'Season'
+  ) +
+  theme_solarized()+
+  theme(legend.position="none")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(plot.subtitle = element_text(hjust = 0.5))
+
+#####################
+library(flexclust)
+library(dslabs)
 
 
-average_goals <- aggregate(goals ~ season, data = improvement, FUN = mean)
+nwsl_team_stats <- nwsl_team_stats |> 
+  mutate(shots = round(goals*(100/goal_conversion_pct)))
 
-# Create the ggplot
-average_goals |> 
-  ggplot(aes(x = factor(season), y = goals)) +
-  geom_bar(stat = "identity", fill = "skyblue") +
-  labs(title = "Average Goals per Year",
-       x = "Year",
-       y = "Average Goals") +
-  theme_bw()
+nwsl_team_stats |> 
+  ggplot(aes(x=shots))+
+  geom_histogram(bins=10)
 
+nwsl_team_stats |> 
+  ggplot(aes(x=goals))+
+  geom_histogram(bins=10)
 
-
-shot_acc_year <- aggregate(shot_accuracy ~ season, data = improvement, FUN = mean)
-
-shot_acc_year |> 
-  ggplot(aes(x = factor(season), y = shot_accuracy)) +
-  geom_bar(stat = "identity", fill = "skyblue") +
-  labs(title = "Average Shot Accuracy per Year",
-       x = "Year",
-       y = "Average Shot Accuracy") +
-  theme_bw()
+nwsl_team_stats <- nwsl_team_stats |> 
+  mutate(
+    std_shots = as.numeric(scale(shots, center = TRUE, scale = TRUE)),
+    std_goals = as.numeric(scale(goals, center = TRUE, scale = TRUE)),
+    std_goal_conversion = as.numeric(scale(goal_conversion_pct, center = TRUE, scale = TRUE))
+  )
 
 
-goal_convert_year <- aggregate(goal_conversion_pct ~ season, data = improvement, FUN = mean)
+####################
+#clustering attempt 3
+nwsl_kmpp <- function(k) {
+  
+  kmeans_results <- nwsl_team_stats |>
+    select(std_shots, std_goal_conversion) |>
+    kcca(k = k, control = list(initcent = "kmeanspp"))
+  
+  kmeans_out <- tibble(
+    clusters = k,
+    total_wss = sum(kmeans_results@clusinfo$size * 
+                      kmeans_results@clusinfo$av_dist)
+  )
+  return(kmeans_out)
+}
 
-goal_convert_year |> 
-  ggplot(aes(x = factor(season), y = goal_conversion_pct)) +
-  geom_bar(stat = "identity", fill = "skyblue") +
-  labs(title = "Average Goal Conversion % per Year",
-       x = "Year",
-       y = "Average Goal Conversion % ") +
-  theme_bw()
+n_clusters_search <- 2:12
+kmpp_search <- n_clusters_search |> 
+  map(nwsl_kmpp) |> 
+  bind_rows()
+kmpp_search |> 
+  ggplot(aes(x = clusters, y = total_wss)) +
+  geom_line() + 
+  geom_point(size = 4) +
+  scale_x_continuous(breaks = n_clusters_search)
+
+###########
+
+set.seed(10)
+init_kmeanspp <- nwsl_team_stats |> 
+  select(std_shots, std_goal_conversion) |> 
+  kcca(k = 5, control = list(initcent = "kmeanspp"))
+
+nwsl_team_stats$shot_cluster <- as.factor(init_kmeanspp@cluster)
+
+nwsl_team_stats |>
+  mutate(
+    shot_cluster = as.factor(init_kmeanspp@cluster)
+  ) |>
+  ggplot(aes(x = shots, y = goal_conversion_pct,
+             color = shot_cluster)) +
+  geom_point(size = 4) + 
+  ggthemes::scale_color_colorblind() +
+  theme(legend.position = "bottom")
+
+
+nwsl_team_stats |>
+  mutate(
+    shot_cluster = as.factor(init_kmeanspp@cluster)
+  ) |>
+  ggplot(aes(x = shots, y = goal_conversion_pct,
+             color = shot_cluster, size = goals)) +
+  geom_point(alpha=0.7) + 
+  labs(
+    title = 'NWSL Offensive Seasons',
+    x = 'Shots Attempted',
+    y = 'Goal Conversion %'
+  )+
+  theme_solarized()+
+  theme(legend.position = "bottom")
