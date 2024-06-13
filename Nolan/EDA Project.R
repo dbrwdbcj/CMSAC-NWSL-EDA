@@ -77,4 +77,30 @@ nwsl_cluster |>
              size = nwsl_team_stats$goals))+
   geom_point(alpha=.5)
 
+#Creating categorical variables
+tackle.cat = cut(tackle_success_pct, 
+                 breaks = c(quantile(tackle_success_pct, 0), 
+                            quantile(tackle_success_pct, 1/3), 
+                            quantile(tackle_success_pct, 2/3),
+                            quantile(tackle_success_pct, 1)), 
+                 labels = c("Low", "Medium", "High"), include.lowest = TRUE, 
+                 ordered_result = TRUE)
+table(tackle.cat)
+#Splitting up tackle success% into low, medium, and high usage.
+gc.cat = cut(goals_conceded, 
+                 breaks = c(quantile(goals_conceded, 0), 
+                            quantile(goals_conceded, 1/3), 
+                            quantile(goals_conceded, 2/3),
+                            quantile(goals_conceded, 1)), 
+                 labels = c("Low", "Medium", "High"), include.lowest = TRUE, 
+                 ordered_result = TRUE)
+table(gc.cat)
+
+library(ggmosaic)
+nwsl_team_stats |> 
+  ggplot()+
+  geom_mosaic(aes(x=product(gc.cat, tackle.cat), fill = gc.cat))
+table(gc.cat, tackle.cat)  
+
+
 
