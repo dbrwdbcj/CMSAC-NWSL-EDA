@@ -12,6 +12,11 @@ library(ggplot2)
 library(tidyverse)
 library(ggthemes)
 library(viridis)
+
+#Turning season into a discrete variable
+season_disc <- as.factor(season)
+
+
 #PLOT ONLY APPEARS IN MARKDOWN!
 plotly_test <- nwsl_team_stats |> 
   select(TeamName = team_name,

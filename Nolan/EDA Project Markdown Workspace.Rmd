@@ -28,20 +28,24 @@ library(ggplot2)
 library(tidyverse)
 library(ggthemes)
 library(viridis)
+
+#Turning season into a discrete variable
+season_disc <- as.factor(season)
+
 plotly_test <- nwsl_team_stats |> 
   select(TeamName = team_name,
          PossPct = possession_pct,
          GoalDiff = goal_differential,
          Season = season) |> 
-  ggplot(aes(x=PossPct, y=GoalDiff, color=Season, 
+  ggplot(aes(x=PossPct, y=GoalDiff, color=season_disc, 
              text = paste( "",TeamName, "<br>", "Season:", Season, 
                            "<br>", "Possession%:", PossPct, "<br>", 
                            "Goal Differential:", GoalDiff)))+
-  geom_point(alpha=0.6, size = 2)+
-  scale_color_viridis(discrete=FALSE)+
+  geom_point(alpha=0.55, size = 2)+
+  scale_color_colorblind(name = "Season")+
   labs(
     title='Does Controlling the Ball Lead to Success?',
-    subtitle = "Goal Differential vs. Possession Percentage"
+    subtitle = "Goal Differential vs. Possession Percentage",
   )+
   xlab("Possession Percentage")+
   ylab("Goal Differential")+
@@ -51,11 +55,12 @@ plotly_test <- nwsl_team_stats |>
                 "Goal Differential:", round(after_stat(y), 2))), method="lm", 
               color="gray20", inherit.aes = FALSE)+
   theme_solarized()+
-  theme(plot.title = element_text(hjust=0.5, family="Arial", size= 14),
-    axis.title = element_text(family="Arial", size=12),
+  theme(plot.title = element_text(hjust=0.5, family="Arial", size= 14,
+                                  color="gray20"),
+    axis.title = element_text(family="Arial", size=12, color = "black"),
     axis.text = element_text(family="Arial", size=12),
-    legend.title = element_text(family = "Arial", size = 10),  
-    legend.text = element_text(family = "Arial", size = 8),
+    legend.title = element_text(family = "Arial", size= 12, color = "gray20"),  
+    legend.text = element_text(family = "Arial", size = 10, color = "gray20"),
     panel.border = element_rect(color = "gray", fill = NA, linewidth = .5)
   )
 
