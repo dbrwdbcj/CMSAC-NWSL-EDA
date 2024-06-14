@@ -131,3 +131,39 @@ nwsl_team_stats |>
   ggplot()+
   geom_mosaic(aes(x=product(shot_acc.cat, goal_conv.cat), fill = shot_acc.cat))
 table(shot_acc.cat, goal_conv.cat)  
+
+#Bee Swarm Plot
+library(ggbeeswarm)
+nwsl_team_stats |> 
+  ggplot(aes(x = goal_conv.cat, y = shot_accuracy)) +
+  geom_beeswarm(cex = 2)
+
+#Dotplot (Half of the beeswarm plot)
+taylor_all_songs |> 
+  ggplot(aes(x=duration))+
+  geom_dotplot(binwidth = 0.1)
+
+#Histogram
+nwsl_team_stats |> 
+  ggplot(aes(x= goal_conv.cat, y=shot_accuracy))+
+  geom_histogram()
+
+#Hexbin Plot
+library(hexbin)
+ggplot(nwsl_team_stats, aes(x = shot_accuracy, y = goal_conversion_pct)) +
+  geom_hex(bins = 10) +
+  #labs(x= "Average Slider Speed (mph)", y = "Average Slider Break (in.)", 
+       #title = "Graphing Pitchers' Average Speed and Break of a Slider")+
+  #scale_fill_continuous("Number of Pitchers") +
+  theme(plot.background = element_rect(fill = "#ffeabd"))+
+  theme(legend.background = element_rect(fill = "#ffeabd"))
+
+#First Place through Fifth Place Data Frame
+topfive = data.frame(Place = rep(c("1", '2', '3', '4', '5'), each = 6),
+                     Season = rep(c('2016', '2017', '2018', '2019', '2021',
+                                    '2022'), times = 5),
+                     shot_acc = c(54, 43.53, 46.1, 46.54, 42.94, 49.1,
+                                  48.68, 48.96, 48.65, 47.06, 44.76, 51.67,
+                                  48.58, 50, 49.27, 45.28, 47.16, 45.06,
+                                  50, 49.6, 45.68, 40.79, 45.98, 45.33,
+                                  53.97, 50.21, 44.24, 44.8, 38.43, 50.23))
