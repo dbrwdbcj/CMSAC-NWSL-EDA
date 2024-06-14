@@ -158,12 +158,25 @@ ggplot(nwsl_team_stats, aes(x = shot_accuracy, y = goal_conversion_pct)) +
   theme(plot.background = element_rect(fill = "#ffeabd"))+
   theme(legend.background = element_rect(fill = "#ffeabd"))
 
+#Mean Shot Accuracy by Year
+mean_shot_acc <-nwsl_team_stats |> 
+  group_by(season) |> 
+  summarize(mean_shot_acc = mean(shot_accuracy))
+print(mean_shot_acc) 
+
 #First Place through Fifth Place Data Frame
-topfive = data.frame(Place = rep(c("1", '2', '3', '4', '5'), each = 6),
+topfive = data.frame(Place = rep(c("1", '2', '3', '4', '5', 'Mean'), each = 6),
                      Season = rep(c('2016', '2017', '2018', '2019', '2021',
-                                    '2022'), times = 5),
-                     shot_acc = c(54, 43.53, 46.1, 46.54, 42.94, 49.1,
-                                  48.68, 48.96, 48.65, 47.06, 44.76, 51.67,
-                                  48.58, 50, 49.27, 45.28, 47.16, 45.06,
-                                  50, 49.6, 45.68, 40.79, 45.98, 45.33,
-                                  53.97, 50.21, 44.24, 44.8, 38.43, 50.23))
+                                    '2022'), times = 6),
+                     shot_acc = c(54, 43.53, 46.1, 46.54, 42.94, 49.1,#first
+                                  48.68, 48.96, 48.65, 47.06, 44.76, 51.67,#second
+                                  48.58, 50, 49.27, 45.28, 47.16, 45.06,#third
+                                  50, 49.6, 45.68, 40.79, 45.98, 45.33,#fourth
+                                  53.97, 50.21, 44.24, 44.8, 38.43, 50.23,#fifth
+                                  49, 47.9, 45.4, 44.3, 44.4, 47.7))#mean
+topfive |> 
+  ggplot(aes(x = Season, y=shot_acc, color = Place))+
+  geom_point()+
+  geom_line(aes(group = Place))+
+  scale_color_manual(values = c("black", 
+                                viridis_pal()(length(unique(topfive$Place)))))  # Customize line colors here
