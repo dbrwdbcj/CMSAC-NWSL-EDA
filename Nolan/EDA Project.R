@@ -95,6 +95,7 @@ gc.cat = cut(goals_conceded,
                  labels = c("Low", "Medium", "High"), include.lowest = TRUE, 
                  ordered_result = TRUE)
 table(gc.cat)
+#Splitting up goals conceded into low, medium, and high usage.
 
 library(ggmosaic)
 nwsl_team_stats |> 
@@ -102,5 +103,31 @@ nwsl_team_stats |>
   geom_mosaic(aes(x=product(gc.cat, tackle.cat), fill = gc.cat))
 table(gc.cat, tackle.cat)  
 
+ggplot(nwsl_team_stats, aes(x=shot_accuracy, y=goal_conversion_pct))+
+  geom_point()
+
+#Creating categorical variables
+shot_acc.cat = cut(shot_accuracy, 
+                 breaks = c(quantile(shot_accuracy, 0), 
+                            quantile(shot_accuracy, 1/3), 
+                            quantile(shot_accuracy, 2/3),
+                            quantile(shot_accuracy, 1)), 
+                 labels = c("Low", "Medium", "High"), include.lowest = TRUE, 
+                 ordered_result = TRUE)
+table(shot_acc.cat)
 
 
+#Splitting up shot accuracy into low, medium, and high usage.
+goal_conv.cat = cut(goal_conversion_pct, 
+             breaks = c(quantile(goal_conversion_pct, 0), 
+                        quantile(goal_conversion_pct, 1/3), 
+                        quantile(goal_conversion_pct, 2/3),
+                        quantile(goal_conversion_pct, 1)), 
+             labels = c("Low", "Medium", "High"), include.lowest = TRUE, 
+             ordered_result = TRUE)
+table(goal_conv.cat)
+#Splitting up goal conversion% into low, medium, and high usage.
+nwsl_team_stats |> 
+  ggplot()+
+  geom_mosaic(aes(x=product(shot_acc.cat, goal_conv.cat), fill = shot_acc.cat))
+table(shot_acc.cat, goal_conv.cat)  
