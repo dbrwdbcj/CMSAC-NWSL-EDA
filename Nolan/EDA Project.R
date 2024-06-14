@@ -174,9 +174,24 @@ topfive = data.frame(Place = rep(c("1", '2', '3', '4', '5', 'Mean'), each = 6),
                                   50, 49.6, 45.68, 40.79, 45.98, 45.33,#fourth
                                   53.97, 50.21, 44.24, 44.8, 38.43, 50.23,#fifth
                                   49, 47.9, 45.4, 44.3, 44.4, 47.7))#mean
+#Neither of these give me the line width I want
 topfive |> 
   ggplot(aes(x = Season, y=shot_acc, color = Place))+
-  geom_point()+
-  geom_line(aes(group = Place))+
-  scale_color_manual(values = c("black", 
-                                viridis_pal()(length(unique(topfive$Place)))))  # Customize line colors here
+  geom_point(alpha = 0.6, size = 3)+
+  geom_line(aes(group = Place, linewidth = rep(c(1,1,1,1,1,2), each=6))) +
+  scale_color_manual(values = c("#CC79A7", "#0072B2", '#009E73', '#D55E00', 
+                                '#56B4E9', 'black'))+
+  scale_linewidth_manual(values = c(1, 1, 1, 1, 1, 2)) +
+  guides(size = 'none')  # Disable legend for line thickness
+
+
+topfive |> 
+  ggplot(aes(x = Season, y = shot_acc, color = Place)) +
+  geom_point(alpha = 0.6, size = 3) +
+  geom_line(aes(group = Place), size = ifelse(topfive$Place == "black", 2, 1), linetype = "solid") +
+  scale_color_manual(values = c("#CC79A7", "#0072B2", '#009E73', '#D55E00', '#56B4E9', 'black')) +
+  scale_linetype_manual(values = c("solid", "solid", "solid", "solid", "solid", "solid")) +
+  guides(color = "none", linetype = "none")  # Remove legends for color and linetype
+
+
+                     
