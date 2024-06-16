@@ -49,11 +49,11 @@ ggplot(topfive, aes(x = Season, y = shot_acc, color = Place)) +
     y = "Shot Accuracy (%)",
     color = "Team Rank"
   ) +
-  theme_minimal() +
+  theme_solarized() +
   theme(
     legend.position = "right",
-    legend.title = element_text(size = 10),
-    legend.text = element_text(size = 8)
+    legend.title = element_text(size = 12, color = "black"),
+    legend.text = element_text(size = 10, color = "black"),
   )
 
 # creating data for team rankings
