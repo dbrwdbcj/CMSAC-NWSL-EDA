@@ -181,12 +181,61 @@ nwsl_team_stats |>
     y = 'Goal Conversion %'
   )+
   theme_solarized()+
-  theme(legend.position = "bottom", 
+  theme(legend.position = "right", 
         legend.background = element_rect(fill = NA),
         legend.key = element_rect(fill=NA))+
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(color='Cluster',
+       size = 'Goals') 
+
 
 ############
+#Trying to make a categorical variable viz
+
+nwsl_team_stats |> 
+  ggplot(aes(x=possession_pct))+
+  geom_histogram(bins=13)
+
+nwsl_team_stats |>
+  ggplot(aes(x = possession_pct)) + 
+  geom_histogram(aes(y=after_stat(density))) +
+  geom_density()+
+  geom_rug(alpha = 0.3)
+
+fd_bw <- 2 * IQR(nwsl_team_stats$possession_pct) / length(nwsl_team_stats$possession_pct)^(1/3)
+
+nwsl_team_stats |>
+  ggplot(aes(x = possession_pct)) +
+  geom_histogram(binwidth = fd_bw)
+
+nwsl_team_stats |>
+  ggplot(aes(x = possession_pct)) + 
+  geom_histogram(aes(y=after_stat(density)), binwidth = fd_bw) +
+  geom_density()+
+  geom_rug(alpha = 0.3)
+
+nwsl_team_stats <- nwsl_team_stats |> 
+  mutate(std_possession = as.numeric(scale(possession_pct)))
+
+
+nwsl_team_stats |>
+  ggplot(aes(x = std_possession)) + 
+  geom_histogram(aes(y=after_stat(density))) +
+  geom_density()
+
+nwsl_team_stats <- nwsl_team_stats |> 
+  mutate(possession_style = round(std_possession))
+
+nwsl_team_stats <- nwsl_team_stats |> 
+  mutate(style = as.factor(ifelse(possession_style<=-2, 'Low Possession', 
+                             ifelse(possession_style<2 & possession_style>-2, 'Average Possession', 
+                                    ifelse(possession_style>=2, 'High Possession',
+                                           'huh')))))
+
+nwsl_team_stats |> 
+  count(style, team_name) |> 
+  ggplot(aes(x=style, y = n, fill = team_name))+
+  geom_col(position='dodge')
 
 
 
