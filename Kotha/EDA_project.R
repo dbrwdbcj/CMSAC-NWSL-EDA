@@ -29,22 +29,15 @@ topfive = data.frame(Place = rep(c("1", '2', '3', '4', '5', 'Mean'), each = 6),
                                   50, 49.6, 45.68, 40.79, 45.98, 45.33,#fourth
                                   53.97, 50.21, 44.24, 44.8, 38.43, 50.23,#fifth
                                   49, 47.9, 45.4, 44.3, 44.4, 47.7))#mean
-topfive |> 
-  ggplot(aes(x = Season, y = shot_acc, color = Place)) +
-  geom_point() +
-  geom_line(aes(group = Place))+
-  scale_color_manual(values = c("black", 
-                                viridis_pal()(length(unique(topfive$Place)))))  # Customize line colors here
-
 
 # Plotting the data: Shot Accuracy of Top 5 Ranked Teams Compared to League Mean
 ggplot(topfive, aes(x = Season, y = shot_acc, color = Place)) +
   geom_point(alpha = 0.6, size = 3) +
-  geom_line(aes(group = Place, linetype = ifelse(Place == "Mean", "dashed", "solid")), size = 1) +
+  geom_line(aes(group = Place, linetype = ifelse(Place == "Mean", "dashed", "solid")), size = 1.6, alpha = 0.8 ) +
   scale_color_manual(values = c("#CC79A7", "#710193", "#009E73", "#D55E00", "#56B4E9", "black")) +
    scale_linetype_identity() +
   labs(
-    title = "Shot Accuracy of Top 5 Ranked Teams Compared to League Mean",
+   # title = "Shot Accuracy of Top 5 Ranked Teams Compared to League Mean",
     x = "Season",
     y = "Shot Accuracy (%)",
     color = "Team Rank"
@@ -54,7 +47,15 @@ ggplot(topfive, aes(x = Season, y = shot_acc, color = Place)) +
     legend.position = "right",
     legend.title = element_text(size = 12, color = "black"),
     legend.text = element_text(size = 10, color = "black"),
+    axis.title = element_text(color = "black")
   )
+
+topfive |> 
+  ggplot(aes(x = Season, y = shot_acc, color = Place)) +
+  geom_point() +
+  geom_line(aes(group = Place))+
+  scale_color_manual(values = c("black", 
+                                viridis_pal()(length(unique(topfive$Place)))))  # Customize line colors here
 
 # creating data for team rankings
 team_rankings <- data.frame(
