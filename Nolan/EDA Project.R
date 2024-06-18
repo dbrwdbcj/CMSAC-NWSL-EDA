@@ -196,12 +196,12 @@ topfive$Place = factor(topfive$Place, levels = c("First", 'Second', 'Third',
 #   scale_linetype_manual(values = c("solid", "solid", "solid", "solid", "solid", "solid")) +
 #   guides(color = "none", linetype = "none")  # Remove legends for color and linetype
 
-#Neha's Code
+
 # Plotting the data: Shot Accuracy of Top 5 Ranked Teams Compared to League Mean
 ggplot(topfive, aes(x = Season, y = shot_acc, color = Place)) +
   geom_point(alpha = 0.6, size = 3) +
-  geom_line(aes(group = Place, linetype = ifelse(Place == "Mean", "longdash", "solid")), 
-            size=2, alpha = .8 ) +
+  geom_line(aes(group = Place, linetype = ifelse(Place == "Mean", "dashed", "solid")), 
+            size=1.6, alpha = .7 ) +
   scale_color_manual(values = c("#CC79A7", "#710193", "#009E73", "#D55E00", 
                                 "#56B4E9", "black")) +
   scale_linetype_identity() +
